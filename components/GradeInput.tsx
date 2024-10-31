@@ -30,8 +30,16 @@ const GradeInput: React.FC<GradeInputProps> = ({
 }) => {
   return (
     <div className="flex mb-2">
+      <input
+        type="number"
+        className="border p-1 w-16 rounded-lg"
+        placeholder="Credits"
+        value={credit}
+        onChange={(e) => onCreditChange(index, Number(e.target.value))}
+      />{" "}
+      &nbsp;
       <select
-        className="mr-2 border p-1"
+        className="ml-2 border p-1 rounded-lg"
         value={grade}
         onChange={(e) => onGradeChange(index, e.target.value as Grade)}
       >
@@ -42,13 +50,6 @@ const GradeInput: React.FC<GradeInputProps> = ({
           </option>
         ))}
       </select>
-      <input
-        type="number"
-        className="border p-1 w-16"
-        placeholder="Credits"
-        value={credit}
-        onChange={(e) => onCreditChange(index, Number(e.target.value))}
-      />
     </div>
   );
 };
