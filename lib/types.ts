@@ -1,24 +1,15 @@
-export interface Subject {
-  name: string;
-  credits: number;
-  grade?: string;
-}
+export const GRADES = {
+  'A': 10,
+  'A-': 9,
+  'B': 8,
+  'B-': 7,
+  'C': 6,
+  'C-': 5,
+  'D': 4,
+  'E': 3
+} as const;
 
-export interface GradeValue {
-  label: string;
-  value: number;
-}
-
-export const GRADES: GradeValue[] = [
-  { label: 'A', value: 10 },
-  { label: 'A-', value: 9 },
-  { label: 'B', value: 8 },
-  { label: 'B-', value: 7 },
-  { label: 'C', value: 6 },
-  { label: 'C-', value: 5 },
-  { label: 'D', value: 4 },
-  { label: 'E', value: 3 },
-];
+export type Grade = keyof typeof GRADES;
 
 export const subjectsCredits = {
   "Biology Laboratory (BIO F110)": 1,
@@ -45,4 +36,27 @@ export const subjectsCredits = {
   "Digital Design (CS F215)": 4,
   "Discrete Structures for Computer Science (CS F222)": 3,
   "Mathematics III (MATH F211)": 3
-};
+} as const;
+
+export type SubjectName = keyof typeof subjectsCredits;
+
+export interface Subject {
+  name: SubjectName;
+  credits: number;
+  grade?: Grade;
+}
+
+export function calculateCGPA(subjects: Subject[]): string {
+  if (subjects.length === 0) return '0.00';
+
+  const totalCredits = subjects.reduce((sum, subject) => 
+    subject.grade ? sum + subject.credits : sum, 0);
+  
+  const weightedSum = subjects.reduce((sum, subject) => {
+    if (!subject.grade) return sum;
+    const gradeValue = GRADES[subject.grade];
+    return sum + (gradeValue * subject.credits);
+  }, 0);
+
+  return totalCredits > 0 ? (weightedSum / totalCredits).toFixed(2) : '0.00';
+}
